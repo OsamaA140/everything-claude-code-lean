@@ -17,6 +17,12 @@ Most plugin stacks quietly tax every session and every invocation. This one does
 
 How: agents/skills state *when and why*, not re-teach *how* (Claude already knows the syntax); commands are thin pointers to agents instead of duplicating them; execution agents run on Sonnet with Opus reserved for architecture, planning, and security; and all enforcement lives in zero-token hooks. Full change log in `OPTIMIZATION.md` and `CHANGELOG.md`.
 
+### The secret-leak hook in action
+
+![The pre-write hook denying a Write that contains an Anthropic API key, before it reaches disk](docs/demo-secret-block.svg)
+
+*Rendered from a real session exchange — same text the hook produces live.*
+
 ## What's Inside
 
 ```
