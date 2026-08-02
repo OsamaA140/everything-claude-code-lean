@@ -1,0 +1,28 @@
+{
+  "name": "everything-claude-code",
+  "version": "2.0.1",
+  "description": "Token-lean Claude Code stack: 9 agents, 26 skills, tested zero-token safety hooks (secret-leak + destructive-command blocking) - ~1,260 always-on tokens total, 70-80% cheaper per invocation than the upstream originals",
+  "author": {
+    "name": "Affaan Mustafa",
+    "url": "https://x.com/affaanmustafa"
+  },
+  "homepage": "https://github.com/affaan-m/everything-claude-code",
+  "repository": "https://github.com/affaan-m/everything-claude-code",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "agents",
+    "skills",
+    "hooks",
+    "commands",
+    "rules",
+    "tdd",
+    "code-review",
+    "security",
+    "workflow",
+    "automation",
+    "best-practices"
+  ],
+  "commands": "./commands",
+  "skills": "./skills"
+}

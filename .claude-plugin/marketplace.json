@@ -1,0 +1,44 @@
+{
+  "name": "everything-claude-code",
+  "owner": {
+    "name": "Affaan Mustafa",
+    "email": "affaan@example.com"
+  },
+  "metadata": {
+    "description": "Token-optimized fork of everything-claude-code - same coverage, a fraction of the context cost"
+  },
+  "plugins": [
+    {
+      "name": "everything-claude-code",
+      "source": "./",
+      "description": "Token-lean Claude Code stack: 9 agents, 26 skills, tested zero-token safety hooks - ~1,260 always-on tokens total, 70-80% cheaper per invocation than the upstream originals",
+      "author": {
+        "name": "Affaan Mustafa"
+      },
+      "homepage": "https://github.com/affaan-m/everything-claude-code",
+      "repository": "https://github.com/affaan-m/everything-claude-code",
+      "license": "MIT",
+      "keywords": [
+        "agents",
+        "skills",
+        "hooks",
+        "commands",
+        "tdd",
+        "code-review",
+        "security",
+        "best-practices"
+      ],
+      "category": "workflow",
+      "tags": [
+        "agents",
+        "skills",
+        "hooks",
+        "commands",
+        "tdd",
+        "code-review",
+        "security",
+        "best-practices"
+      ]
+    }
+  ]
+}
