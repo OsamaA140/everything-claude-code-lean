@@ -1,5 +1,7 @@
 # Everything Claude Code — Lean
 
+[![tests](https://github.com/OsamaA140/everything-claude-code-lean/actions/workflows/tests.yml/badge.svg)](https://github.com/OsamaA140/everything-claude-code-lean/actions/workflows/tests.yml)
+
 Production-ready agents, skills, hooks, commands, and rules for Claude Code — a **token-optimized fork** of [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) that keeps the coverage and cuts the cost.
 
 ## Why this fork: it barely costs tokens

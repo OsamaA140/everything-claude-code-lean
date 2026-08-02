@@ -1,0 +1,22 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+    name: node ${{ matrix.node }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # hook scripts persist session state under ~/.claude — pre-create on the fresh runner
+      - run: mkdir -p ~/.claude/sessions ~/.claude/skills/learned
+      - run: node tests/run-all.js
