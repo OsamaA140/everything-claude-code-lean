@@ -8,12 +8,18 @@ Production-ready agents, skills, hooks, commands, and rules for Claude Code — 
 
 Most plugin stacks quietly tax every session and every invocation. This one doesn't:
 
-| | This fork | Typical full-size stacks |
+Measured, not claimed — full methodology and reproduction steps in [docs/BENCHMARK.md](docs/BENCHMARK.md):
+
+| | This fork | Upstream ECC (measured @ e4e4163) |
 |---|---|---|
-| Always-on context cost | **~1,260 tokens** for all 26 skills + 9 agents | several thousand+, multiplied per plugin installed |
-| Per-invocation cost | **70-80% fewer tokens** than the upstream originals | full worked examples re-sent on every call |
-| Hooks (secret blocking, command guard, formatting) | **0 tokens** — they run in the harness, not the model | 0 (same mechanism — but often shipped untested) |
-| Verification | 100/100 unit tests; every guard live-fired in real sessions | usually none |
+| Always-on context cost | **~1,260 tokens** for all 26 skills + 9 agents | ~93,000 tokens for a full checkout |
+| Avg agent invocation | **623 tokens** | 1,605 tokens (**61% less**) |
+| Avg skill invocation | **455 tokens** | 2,203 tokens (**79% less**) |
+| Avg command invocation | **189 tokens** | 970 tokens (**81% less**) |
+| Hooks (secret blocking, command guard, formatting) | **0 tokens** — they run in the harness, not the model | 0 (same mechanism) |
+| Verification | 100/100 unit tests, CI on Node 20/22, guards live-fired in real sessions | — |
+
+(Fair-comparison note: upstream is a marketplace meant to be partially enabled, and covers far more ground — the per-invocation averages are the like-for-like numbers. Details and caveats in the benchmark doc.)
 
 How: agents/skills state *when and why*, not re-teach *how* (Claude already knows the syntax); commands are thin pointers to agents instead of duplicating them; execution agents run on Sonnet with Opus reserved for architecture, planning, and security; and all enforcement lives in zero-token hooks. Full change log in `OPTIMIZATION.md` and `CHANGELOG.md`.
 
