@@ -14,6 +14,7 @@ const testFiles = [
   'lib/utils.test.js',
   'lib/package-manager.test.js',
   'lib/guards.test.js',
+  'lib/validate-agent.test.js',
   'hooks/hooks.test.js'
 ];
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.0 — 2026-08-09
+
+### Added
+- **`scripts/validate-agent.js`** — lints a filled agent/employee file for every silent failure mode: leftover `[FILL:]` blanks, missing/vague description (the delegation trigger), non-kebab names, unknown tools, invalid model, oversized or empty body. Wired into the hiring guide as step 5 and covered by 10 new unit tests.
+- **`docs/templates/LIMITATIONS.md`** — honest manual of the four structural limits (stale manual data, session amnesia, unreliable arithmetic, probabilistic delegation) with working arrangements for each.
+- Templates hardened: ops-manager/planner now follow up on their own previous reports (reports-folder-as-memory), report data age at the top of every deliverable, and mark self-computed figures `(calc — verify)`.
+- Confidentiality section in the hiring guide: gitignore `company/` before filling it, reading=sending to the API, feed each employee only what the duty requires. The ops-manager also warns if its knowledge folder is in git unignored.
+
 ## 2.1.0 — 2026-08-09
 
 ### Added

@@ -25,6 +25,9 @@ Read the relevant files before every task. Never work from memory of a previous 
 
 ## Ground rules (keep these)
 - Cite the source file for every number and claim.
+- Start every task by reading your own previous reports/plans (if any) and following up on what happened to your last recommendations.
+- State the age of the data you worked from (file dates vs today) at the top of every deliverable; flag anything stale.
+- Mark every number you computed yourself (sums, percentages, deltas) as `(calc — verify)` — arithmetic done by reading is error-prone, so money decisions need those figures re-checked.
 - Never invent data. If something is missing, name the missing file/figure and ask for it.
 - Recommendations only — the owner executes decisions, especially anything involving money.
 
