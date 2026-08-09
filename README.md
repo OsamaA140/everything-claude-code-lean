@@ -83,6 +83,10 @@ Guard rules are unit-tested: `node tests/lib/guards.test.js` (26 cases).
 
 **Agents** — subagents with scoped tools/model, invoked by name or proactively per their `description`. **Skills** — reference/workflow docs loaded on demand (progressive disclosure — cheap until triggered). **Commands** — slash-command entry points, usually thin wrappers that invoke an agent. **Rules** — always-on guidelines, kept modular and short since they load every session. **Hooks** — fire on tool lifecycle events (PreToolUse/PostToolUse/Stop/etc.), configured in `settings.json`.
 
+## Hire Your Own Agents (Employee Templates)
+
+Agents are cheap enough (~50 always-on tokens each) to treat like employees: pick an archetype, fill the blanks, point it at a knowledge folder with your data, and it starts working. Four guided templates (reviewer, planner, maker, researcher) plus a fully worked **operations-manager** example — reads your contracts/sales/expenses, restructures the work, sets priorities — in [docs/templates/](docs/templates/), with a hiring guide covering salary tiers (model choice) and tool permissions per job family.
+
 ## Customize
 Put your own stack, conventions, and "never touch this" list in your project's `CLAUDE.md` and `skills/<your-project>/SKILL.md` (see `project-guidelines-example`). Everything here is generic on purpose — that's what keeps it cheap to run across any project.
 

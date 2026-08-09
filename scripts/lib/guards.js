@@ -130,7 +130,7 @@ function scanForSecrets(text, filePath = '') {
 const DOC_ALLOWED_NAME_RE =
   /(README|CHANGELOG|LICENSE|SECURITY|CLAUDE|AGENTS|CONTRIBUTING|SKILL|MEMORY|TASKS)\.(md|txt)$/i;
 const DOC_ALLOWED_DIR_RE =
-  /(^|\/)(docs|doc|rules|agents|commands|skills|memory|codemaps|examples|contexts|\.claude|\.github)\//;
+  /(^|\/)(docs|doc|rules|agents|commands|skills|memory|codemaps|examples|contexts|templates|company|\.claude|\.github)\//;
 
 /**
  * Should creating this file be blocked as a stray doc file?

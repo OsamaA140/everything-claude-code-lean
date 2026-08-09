@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 — 2026-08-09
+
+### Added
+- **Employee templates** (`docs/templates/`): hire-ready agent archetypes with guided `[FILL: …]` blanks — reviewer, planner, maker, researcher — plus a fully worked `operations-manager` example that reads a company's contracts/sales/expenses from a knowledge folder, restructures the work, and sets priorities. Hiring guide covers the description-as-hiring-trigger rule, salary tiers (model choice), and least-privilege tool presets per job family.
+- Stray-doc guard now allowlists `templates/` and `company/` directories (agent knowledge folders).
+
 ## 2.0.1 — 2026-08-02
 
 ### Removed

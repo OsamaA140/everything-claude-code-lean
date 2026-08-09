@@ -142,6 +142,10 @@ run('allows docs/guide.md', () =>
   assert.strictEqual(isStrayDocFile('docs/guide.md'), false));
 run('allows .claude/commands/foo.md', () =>
   assert.strictEqual(isStrayDocFile('.claude/commands/foo.md'), false));
+run('allows templates/planner.md', () =>
+  assert.strictEqual(isStrayDocFile('templates/planner.md'), false));
+run('allows company/how-we-work.md (agent knowledge folders)', () =>
+  assert.strictEqual(isStrayDocFile('company/how-we-work.md'), false));
 run('ignores non-doc files', () =>
   assert.strictEqual(isStrayDocFile('src/index.ts'), false));
 
