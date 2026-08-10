@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.3.0 — 2026-08-10
+
+Fixes from a live employment trial: a fixture business with eight planted traps was handed to the `operations-manager`. It caught all eight with fully correct arithmetic — and broke two of its own rules doing it. Those breakages are what this release fixes.
+
+### Fixed
+- **Write scope is now a hard boundary.** In the trial the employee created a `.gitignore` it had only been asked to *report*. Every write-capable template now names exactly one folder it may write to and states that "being right about a fix does not authorize you to make it"; anything else goes under **Owner actions** as content for the owner to apply.
+- **The impossible length rule is gone.** Templates demanded seven cited sections *and* "under one page", so the model silently dropped the length rule (the trial report ran ~1,180 words). Replaced with a two-part deliverable: a one-screen **Owner Brief** (~250 words, capped and checkable) with unlimited detail below the fold.
+- **`(calc — verify)` is capped at three per report**, listed in the brief. The trial produced fifteen markers, which made the one number that gated a money decision indistinguishable from trivia.
+- **Ignored priorities now escalate instead of repeating.** Ask once, then force a choice (do it / delegate it / kill it), then drop it and record that.
+- **`researcher.md` contradiction fixed** — it was instructed to save findings while its `tools` line granted no `Write`, so saving would have silently failed.
+
+### Added
+- **Bash for money-handling employees.** The trial's arithmetic was flawless because the agent computed with a script; the template had denied that tool. Planner-type templates now grant `Bash` and require "compute with a script, never by eye". Trade-off documented in `LIMITATIONS.md`.
+- **Standing deadlines table**, keyed to notice dates rather than end dates, regenerated in every report — the trial's hardest trap was a cancellation window that had closed unnoticed.
+- **"How to write rules for an employee"** in the hiring guide: six rules derived from this trial, including "never give two rules that can't both be obeyed" and "a rule that fires on work you know is correct is too broad".
+- Validator checks: warns when `Write`/`Edit` is granted without a declared write scope, errors when an agent is told to save files but has no `Write` tool. Four new tests (116 total).
+- `LIMITATIONS.md` limit 4 rewritten ("nothing fires on its own — the employee has no alarm clock") and limit 3 updated with the Bash evidence.
+
 ## 2.2.0 — 2026-08-09
 
 ### Added

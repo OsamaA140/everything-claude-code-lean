@@ -20,16 +20,27 @@ An agent invocation starts blank: no memory of last week's conversation, your ve
 - Never delete the reports folder — it's the employee's entire work history and the follow-up loop depends on it.
 - If you tell the agent something important mid-conversation, end with: "add that to how-we-work.md" — otherwise it's gone next session.
 
-## 3. Their arithmetic is unreliable
+## 3. Their arithmetic is unreliable unless they use a calculator
 
-Language models compute by reading, not by calculating. Summing an expense sheet or deriving a month-over-month percentage can be silently wrong while looking perfectly cited. The templates force every self-computed figure to be marked `(calc — verify)` — but marking doesn't make it correct.
+Language models compute by reading, not by calculating. Summing an expense sheet or deriving a month-over-month percentage can be silently wrong while looking perfectly cited.
+
+**This one is mostly solved, and here is the evidence.** In our trial the employee produced a dozen figures — totals, percentage changes, day counts, notice dates — and every single one was correct when checked independently. It said why: *"I ran the sums and date maths through a script rather than doing them by eye."* That is why the planner and operations-manager templates now grant `Bash` and require step 4: **compute with a script, never by eye.**
 
 **How to deal with it:**
-- **Never move money on a `(calc)` number** without re-checking it in a spreadsheet. Copied numbers (cited to a file) are trustworthy; calculated ones are drafts.
-- Pre-compute totals where you can: if your accounting tool exports a summary row, include it — the agent citing your total beats the agent deriving its own.
-- Technical users can grant `Bash` so the agent computes with real tools (`awk`, a script) instead of by eyeball — at the cost of giving that employee command execution. Least privilege still applies.
+- **Keep the Bash grant** on any employee that handles money. Without it you are back to eyeballed arithmetic. The trade-off is real — that employee can run shell commands — but this plugin's `pre-bash` hook blocks the destructive ones, and read-plus-calculate is the whole job for a financial role.
+- **Still verify the decision-critical numbers.** The templates now cap `(calc — verify)` at three per report, listed in the brief. Check those three; that is a 30-second job, unlike checking fifteen.
+- Pre-compute where you can: a summary row exported from your accounting tool is a *copied* number, always safer than a derived one.
 
-## 4. Delegation is probabilistic, and this is a developer tool
+## 4. Nothing fires on its own — the employee has no alarm clock
+
+The employee only exists while you're talking to it. It can build a deadline table, set a reminder date, and correctly conclude "the PrintWorks notice is due Oct 1" — and then nothing happens on Oct 1, because nothing is running. In our trial it proposed exactly such a reminder for the failure it had just caught, which would have drifted the same way.
+
+**How to deal with it:**
+- The **standing deadlines table is regenerated in every report**, so the gate is in front of you each time you ask. That converts "remember Oct 1" into "you will see Oct 1 in every report until it passes" — which only works if you ask on a schedule.
+- **Put the schedule outside the agent.** A recurring calendar entry ("run the ops report") is the whole fix and takes a minute. Technical users can automate it with `cron` or a scheduled Claude Code task.
+- Escalation is now bounded (ask, then force a choice, then drop it), so an ignored item can't quietly repeat forever — but *you* still have to open the report.
+
+## 5. Delegation is probabilistic, and this is a developer tool
 
 Claude decides *by itself* when to hand work to your employee, based on the description field. A good "Use PROACTIVELY when…" makes that reliable, not guaranteed — sometimes Claude answers directly instead of delegating. And underneath, this all runs in Claude Code: sessions, a terminal, files — built for developers, usable by owners, but the seams show.
 

@@ -72,8 +72,8 @@ function validate(file) {
   }
 
   // tools
+  const tools = fm.tools ? fm.tools.split(',').map(t => t.trim()).filter(Boolean) : [];
   if (fm.tools) {
-    const tools = fm.tools.split(',').map(t => t.trim()).filter(Boolean);
     const unknown = tools.filter(t => !KNOWN_TOOLS.has(t));
     if (unknown.length) errors.push(`frontmatter: unknown tool(s): ${unknown.join(', ')}`);
     if (tools.includes('Bash') && /review|check|audit/i.test(fm.name || '')) {
@@ -81,6 +81,23 @@ function validate(file) {
     }
   } else {
     warns.push('no "tools" line — agent inherits ALL tools; set an explicit least-privilege list');
+  }
+
+  // Write access must come with a declared, bounded write scope.
+  // Without it, agents "helpfully" edit files outside their mandate.
+  const canWrite = tools.includes('Write') || tools.includes('Edit');
+  const declaresScope = /##\s*write scope/i.test(body);
+  // Warning, not error: for a code agent "edit the codebase" is the job, so an
+  // explicit scope is optional. For an employee reading business data it is not —
+  // hence the reminder rather than a rule that fires on correct existing work.
+  if (canWrite && !declaresScope) {
+    warns.push('Write/Edit granted but no "## Write scope" section — if this agent reads business/personal data, bound where it may write or it will "helpfully" edit things outside its job');
+  }
+
+  // Instructed to save files but has no way to do it (silent no-op at runtime)
+  const toldToSave = /\b(save|write)\b[^.\n]{0,40}\b(to|in|into)\b[^.\n]{0,40}(folder|\/|\.md)/i.test(body);
+  if (toldToSave && !canWrite && fm.tools) {
+    errors.push('body instructs the agent to save/write files but "tools" grants no Write — it will silently fail');
   }
 
   // model

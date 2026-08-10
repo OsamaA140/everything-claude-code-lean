@@ -92,6 +92,36 @@ run('near-empty body fails', () => {
   assert.ok(r.errors.some(e => e.includes('empty')));
 });
 
+run('Write without a declared write scope warns (not fatal — code agents edit by design)', () => {
+  const r = validate(
+    write('noscope.md', `---\nname: foo-bar\ndescription: Ops specialist. Use PROACTIVELY when priorities are unclear.\ntools: Read, Write\nmodel: sonnet\n---\n${GOOD_BODY}`)
+  );
+  assert.strictEqual(r.errors.length, 0);
+  assert.ok(r.warns.some(w => w.includes('Write scope')), 'should warn about unbounded write');
+});
+
+run('Write with a declared write scope passes', () => {
+  const r = validate(
+    write('scoped.md', `---\nname: foo-bar\ndescription: Ops specialist. Use PROACTIVELY when priorities are unclear.\ntools: Read, Write\nmodel: sonnet\n---\n## Write scope\nOnly inside company/reports/.\n${GOOD_BODY}`)
+  );
+  assert.strictEqual(r.errors.length, 0, r.errors.join('; '));
+});
+
+run('told to save but has no Write tool fails', () => {
+  const r = validate(
+    write('cantsave.md', `---\nname: foo-bar\ndescription: Research specialist. Use PROACTIVELY when facts are needed.\ntools: Read, Grep\nmodel: sonnet\n---\nSave the result to company/past-research/ when done.\n${GOOD_BODY}`)
+  );
+  assert.ok(r.errors.some(e => e.includes('no Write')), 'should catch save-without-Write contradiction');
+});
+
+run('all shipped templates pass their own rules', () => {
+  const dir = path.join(__dirname, '..', '..', 'docs', 'templates');
+  for (const f of ['operations-manager.md']) {
+    const r = validate(path.join(dir, f));
+    assert.strictEqual(r.errors.length, 0, `${f}: ${r.errors.join('; ')}`);
+  }
+});
+
 run('missing PROACTIVELY only warns, does not fail', () => {
   const r = validate(
     write('noproactive.md', `---\nname: foo-bar\ndescription: A specialist for organizing operations work and setting priorities.\ntools: Read\nmodel: sonnet\n---\n${GOOD_BODY}`)

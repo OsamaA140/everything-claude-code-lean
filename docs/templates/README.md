@@ -43,6 +43,17 @@ Your `company/` folder will contain contracts, financials, and customer data. Th
 | Mid-level | `sonnet` | Most real work — the default. All our execution agents run on this |
 | Senior | `opus` | Judgment-heavy roles only: architecture, big restructures, security |
 
+## How to write rules for an employee (learned the hard way)
+
+These come from an actual trial where the employee performed well *and* broke two of its own rules. Rules are not free — each one costs tokens on every invocation and can silently contradict another.
+
+1. **Never give two rules that can't both be obeyed.** Our first ops-manager was told "keep reports under one page" *and* to produce seven sections with citations. Impossible, so it quietly dropped the length rule. When rules conflict, the model picks one and you never find out which. Fix the spec, don't add a third rule telling it to obey the first two.
+2. **A rule fires or it doesn't — make it checkable.** "Be concise" is a wish. "Part 1 must fit one screen, ~250 words" is a rule. If you can't tell from the output whether it was followed, it wasn't a rule.
+3. **Bound every permission you grant.** Giving `Write` without saying *where* means the agent writes wherever it seems helpful. In our trial it created a `.gitignore` it was only asked to *report* — right call, wrong authority. Every template with write access now names one folder and says "being right about a fix does not authorize you to make it."
+4. **Don't flag everything, or the flags stop working.** We required `(calc — verify)` on computed numbers; the agent tagged fifteen of them, including trivia, so the one number that mattered got the same warning as the rest. Caps ("at most three, listed in the brief") beat blanket rules.
+5. **A rule that fires on work you know is correct is too broad.** While building the validator, the write-scope check flagged our own code agents, where editing files *is* the job. That's a warning, not an error, now. If a new rule condemns something you'd happily ship, narrow it before you keep it.
+6. **Asking is not enforcing.** "Ask why it wasn't done" repeated monthly is nagging, not management. Give a ladder with an end: ask, then escalate with a forced choice, then drop it and record that.
+
 ## Rules that make employees good
 
 - **The `description` is the hiring trigger.** Claude reads it to decide when to delegate. Always include concrete "Use PROACTIVELY when…" situations — a vague description means an employee that's never given work.
