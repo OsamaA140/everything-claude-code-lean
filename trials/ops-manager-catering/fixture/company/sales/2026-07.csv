@@ -1,0 +1,5 @@
+date,client,invoice,amount_usd,status
+2026-07-06,Northgate Hotel,INV-401,6200,paid
+2026-07-13,Bramble Events,INV-402,5800,paid
+2026-07-21,Coastal Films,INV-403,4300,unpaid
+2026-07-27,Delta Works,INV-404,2900,paid

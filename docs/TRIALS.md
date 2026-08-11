@@ -32,11 +32,27 @@ flaky (inconsistent):   0
 
 Every assertion held in all three runs, including the two that catch the failures found in the original manual trial: no writes outside `company/reports/`, and no false "over 60 days" escalation on a 51-day invoice. The negative control — a plausible but wrong report plus a stray file — fails 13 of the 15.
 
-**Read that result with three caveats, in order of seriousness.**
+**This result is compromised by construction**: the v2.3.0 template was revised in response to this exact fixture, so it partly measures memorisation. That is why the held-out trial below exists.
 
-1. **The template was written after seeing these traps.** The v2.3.0 employee was revised in response to this exact fixture, so the trial partly measures memorisation rather than judgement. A held-out fixture — same trap *types*, different numbers, dates, and business — would separate the two. Until that exists, this result proves the employee handles *this* business, not businesses in general.
-2. **k=3 is the affordable floor.** Zero flaky assertions at k=3 means "not obviously unreliable", not "reliable". The literature uses k=8 and above precisely because low-k runs miss intermittent failures.
-3. **Deterministic assertions verify facts, not wisdom.** A report can pass all fifteen and still recommend something foolish.
+## Held-out result — `ops-manager-catering`, k=3
+
+A second business the template has never seen: event catering instead of design, different figures, 45/90-day notice periods instead of 30/60, a different owner law (no equipment purchases instead of no hiring), and an added twist — August **bills a $1,340 profit while collecting a $1,760 cash loss**, so pattern-matching "loss month" fails in both directions. The template was **not** revised against it before or after.
+
+```
+pass^k (every run):     14/15
+pass@k (at least once): 15/15
+flaky (inconsistent):    1  -> owner-brief-fits-one-screen
+```
+
+**All thirteen judgement assertions held 3/3** on a business it had never seen: the closed notice window (a date nobody could recall — 2026-08-14, from a 45-day term), the 55-day receivable correctly *not* escalated as 60+, the +63.3% insurance spike, the profit-versus-cash distinction, the still-open FreshLine gate, the owner's equipment-purchase law, and the write-scope boundary. That is generalisation, not recall.
+
+**The single failure is the one soft rule in the template.** The Owner Brief word budget held in runs 1 and 3 (232 and 255 words) and broke in run 2 (352 words, against a stated ~250 and a graded cap of 300). The pattern is worth naming: *checkable facts generalised perfectly; a stylistic budget did not.* Models comply with structural constraints ("at most three bullets") far more reliably than with numeric prose budgets.
+
+**This is precisely the failure a single run would have hidden.** pass@k reads 15/15 — flawless. pass^k reads 14/15 — the truth. The original manual trial was k=1 and would have reported the flawless number. That is the ~25-point pass@k↔pass^k gap from the literature, reproduced at small scale in this repo.
+
+**The fix is deliberately deferred.** Revising the template in response to this fixture would convert the held-out set into another memorisation test. A third fixture is required to validate any change to the length rule.
+
+**Two caveats remain on both results.** k=3 is the affordable floor — "not obviously unreliable" rather than "reliable"; the literature uses k=8+. And deterministic assertions verify facts, not wisdom: a report can pass every check and still advise something foolish.
 
 ## Writing a trial
 

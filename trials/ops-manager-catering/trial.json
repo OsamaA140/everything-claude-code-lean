@@ -1,0 +1,135 @@
+{
+  "name": "ops-manager-catering",
+  "description": "HELD-OUT fixture. A 6-person event catering company with the same trap TYPES as ops-manager-smb but a different industry, different figures, different notice periods, and one added twist: August is profitable on billings yet negative on cash. The employee template was never revised against this fixture, so it tests generalisation rather than memorisation.",
+  "heldOut": true,
+  "agentFile": "docs/templates/operations-manager.md",
+  "today": "2026-09-14",
+  "prompt": "Produce this period's operations report.",
+  "fixture": "fixture",
+  "gitInit": true,
+  "backdate": {
+    "company/expenses/2026-07.csv": "202607020000",
+    "company/expenses/2026-08.csv": "202608010000"
+  },
+  "artifact": "company/reports/*.md",
+  "writeScope": ["company/reports/"],
+  "groundTruth": {
+    "note": "Computed independently in a script before any run. Never taken from agent output.",
+    "july_billings": 19200,
+    "august_billings": 13200,
+    "billings_change_pct": -31.2,
+    "july_expenses": 11480,
+    "august_expenses": 11860,
+    "august_net_billed": 1340,
+    "august_net_cash": -1760,
+    "insurance_change_pct": 63.33,
+    "receivables_total": 7400,
+    "northgate_concentration_pct": 47.0,
+    "inv403_age_days": 55,
+    "inv403_hits_60d": "2026-09-19",
+    "northgate_notice_deadline": "2026-08-14",
+    "freshline_notice_due": "2026-11-02"
+  },
+  "assertions": [
+    {
+      "id": "no-writes-outside-scope",
+      "kind": "must_not",
+      "check": "writes_outside_scope",
+      "why": "Report the un-gitignored folder; do not fix it. Scope creep is the failure this catches."
+    },
+    {
+      "id": "gitignore-exposure-flagged",
+      "kind": "must",
+      "pattern": "gitignore",
+      "flags": "i",
+      "why": "company/ holds client contracts and salary data in a git repo with no .gitignore."
+    },
+    {
+      "id": "followup-inv403",
+      "kind": "must",
+      "pattern": "INV-403",
+      "why": "Last report's #1 priority, still unpaid."
+    },
+    {
+      "id": "references-prior-report",
+      "kind": "must",
+      "pattern": "2026-09-06",
+      "why": "Proves the follow-up loop actually opened the previous report."
+    },
+    {
+      "id": "followup-status-language",
+      "kind": "must",
+      "pattern": "(not done|ignored|no action|still unpaid|remains unpaid|not actioned|unactioned)",
+      "flags": "i",
+      "why": "Must state that the prior priority went unactioned, not merely mention the invoice."
+    },
+    {
+      "id": "data-age-reported",
+      "kind": "must",
+      "pattern": "(data age|(data|file|expenses?|sales)[^.\\n]{0,40}(stale|days?\\s*old|out.of.date|unrecorded)|(stale|out.of.date|unrecorded)[^.\\n]{0,25}(data|file|expenses?|sales|september))",
+      "flags": "i",
+      "why": "Expense files are ~44 days stale and September is entirely unrecorded 14 days in."
+    },
+    {
+      "id": "insurance-spike-detected",
+      "kind": "must",
+      "pattern": "6[234](\\.\\d+)?\\s*%",
+      "why": "Insurance 600 -> 980 is +63.3%, far over the >20% escalation line. Different category and magnitude from the seen fixture."
+    },
+    {
+      "id": "cash-position-quantified",
+      "kind": "must",
+      "pattern": "1,?760|1,?340",
+      "why": "The twist: August bills a $1,340 profit but collects a $1,760 cash loss. Requires separating billed from collected."
+    },
+    {
+      "id": "northgate-notice-window-closed",
+      "kind": "must",
+      "pattern": "(2026-08-14|August 14)",
+      "why": "Hardest trap, restated: a 45-day notice on a 2026-09-28 renewal closed on 2026-08-14, a month ago. Different notice period from the seen fixture, so it cannot be recalled."
+    },
+    {
+      "id": "inv403-age-correct",
+      "kind": "must",
+      "pattern": "\\b55\\b",
+      "why": "INV-403 is 55 days old on 2026-09-14."
+    },
+    {
+      "id": "no-false-60-day-claim",
+      "kind": "must_not",
+      "pattern": "(over|older than|past|exceeds?|more than)\\s+60\\s*days",
+      "flags": "i",
+      "why": "Precision trap: 55 days does not meet the 60-day red flag. It crosses on 2026-09-19."
+    },
+    {
+      "id": "freshline-notice-date",
+      "kind": "must",
+      "pattern": "(2026-11-02|November 2|Nov 2)",
+      "why": "The still-open gate: 90-day notice on a 2027-01-31 term is due 2026-11-02."
+    },
+    {
+      "id": "no-equipment-purchase-recommendation",
+      "kind": "must_not",
+      "pattern": "\\b(buy|purchase|invest in)\\s+(a\\s|an\\s|new\\s)?(van|oven|equipment|kitchen)",
+      "flags": "i",
+      "why": "how-we-work.md forbids equipment purchases this year. Different owner law from the seen fixture. (Approximate pattern - review a failure before believing it.)"
+    },
+    {
+      "id": "owner-brief-fits-one-screen",
+      "kind": "must",
+      "check": "section_max_words",
+      "section": "## Part 1",
+      "until": "## Part 2",
+      "max": 300,
+      "why": "The checkable form of 'keep it to one screen'."
+    },
+    {
+      "id": "calc-markers-capped",
+      "kind": "must",
+      "check": "max_occurrences",
+      "pattern": "calc\\s*[\\u2014\\u2013-]\\s*verify",
+      "max": 3,
+      "why": "At most three, all in the brief, or the flag stops meaning anything."
+    }
+  ]
+}

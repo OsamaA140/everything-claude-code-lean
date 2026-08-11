@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.5.0 — 2026-08-11
+
+### Added
+- **`trials/ops-manager-catering/`** — a held-out fixture. Same trap *types* as `ops-manager-smb`, but a different industry, figures, notice periods (45/90-day vs 30/60), a different owner law, and a twist where August bills a profit while collecting a cash loss. The template was never revised against it, so it measures generalisation rather than memorisation.
+
+### Measured
+`operations-manager` v2.3.0 on the held-out fixture, k=3: **14/15 pass^k, 1 flaky**.
+
+All thirteen judgement assertions held 3/3 on a business the template had never seen — including a notice window that closed on a date derived from a 45-day term, a 55-day receivable correctly not escalated as 60+, a +63.3% cost spike, and the profit-vs-cash distinction. The first result was generalisation, not recall.
+
+The single flaky assertion is the Owner Brief word budget (232 / 352 / 255 words against a 300 cap). The pattern: **checkable facts generalised perfectly; a stylistic budget did not.** pass@k reads 15/15 and pass^k reads 14/15 — the gap the harness was built to expose, and exactly what the original k=1 trial would have missed.
+
+The fix is **deliberately deferred**: revising the template against a held-out fixture would destroy its value. A third fixture is needed to validate any change to the length rule.
+
 ## 2.4.0 — 2026-08-11
 
 Behavioural testing for agent files. `validate-agent.js` proves a file is well-formed; a **trial** proves it does the job.

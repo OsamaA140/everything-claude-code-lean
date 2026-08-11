@@ -1,6 +1,6 @@
 {
   "name": "everything-claude-code",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Token-lean Claude Code stack: 9 agents, 26 skills, tested zero-token safety hooks (secret-leak + destructive-command blocking) - ~1,260 always-on tokens total, 70-80% cheaper per invocation than the upstream originals",
   "author": {
     "name": "Affaan Mustafa",
