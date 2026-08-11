@@ -76,6 +76,27 @@ Give every assertion a `why`. It is printed on failure, and writing it forces yo
 
 **Run a negative control before trusting a green result.** Hand-write a report that is plausible but wrong and confirm the assertions fail. Building this suite, that control caught two of my own assertions passing on garbage: `data-age-reported` matched an *invoice* being "60 days old" rather than any statement about data freshness, and `followup-status-language` matched the word "outstanding" in unrelated prose. Both were tightened. A grader that never fails is worthless.
 
+## How this compares to other agent evaluation tooling
+
+The closest thing in the Claude Code ecosystem is [`plugin-eval`](https://github.com/wshobson/agents) (wshobson/agents, 203 agents), a three-layer framework: static analysis, an **LLM judge** scoring semantic dimensions, and a **Monte Carlo** layer running 50-100 simulated runs. It is more ambitious than this harness and covers ground this one does not — notably certification scoring and comparison across plugins, and far more statistical power per evaluation.
+
+The two answer different questions, and the differences are deliberate:
+
+| | plugin-eval | trials (here) |
+|---|---|---|
+| Judges output quality | LLM judge across semantic dimensions | never — deterministic assertions only |
+| Statistical power | 50-100 simulated runs | k real runs (k=3 shipped) |
+| Unit under test | the plugin as an artifact | the employee doing one real job |
+| Prohibited actions | not documented | first-class `MUST_NOT`, incl. filesystem write scope |
+| Ground truth | model-assessed | precomputed by script, recorded in the spec |
+| Aimed at | plugin authors shipping to others | an owner validating their own employee |
+
+**Where plugin-eval is stronger:** run count, breadth, and scoring sophistication. 50-100 runs is a genuinely better reliability signal than k=3.
+
+**Where this harness is stronger, and why it matters here:** its verdicts do not depend on a judge whose measured style bias is 0.76-0.92 — when the artifact is a financial report, "reads well" and "is correct" must not be confused. And it checks what an agent was *forbidden* to do, which is how the scope-creep failure in v2.3.0 was caught at all.
+
+Neither replaces the other. If you ship plugins publicly, plugin-eval's certification is the more complete instrument; if you are about to let an agent read your contracts, a trial answers the narrower question you actually care about.
+
 ## Limits, stated plainly
 
 - Grading is deterministic, so it verifies **checkable facts** — presence of a figure, absence of a false claim, files written. It cannot judge whether the advice was *wise*.
