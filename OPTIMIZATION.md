@@ -1,6 +1,8 @@
-# Optimization Notes
+# Optimization Notes (historical)
 
-This is a token-optimized rewrite of [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) for Osama's own use. Goal: same coverage and behavior, minimum tokens loaded per invocation.
+How the agent, skill, command, and rule set in this project was compressed to its current size. These notes are kept as a record of technique — what was cut and why — and are useful if you are shrinking a configuration of your own.
+
+The starting point was [everything-claude-code](https://github.com/affaan-m/ECC) (MIT); the goal was the same coverage and behaviour at the minimum tokens loaded per invocation. Everything built since — the trial harness, guards, validator, benchmark, and employee templates — is original to this project and covered in `CHANGELOG.md`.
 
 ## What Changed
 

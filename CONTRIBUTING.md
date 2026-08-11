@@ -184,7 +184,7 @@ Then open a PR with:
 
 ## Questions?
 
-Open an issue or reach out on X: [@affaanmustafa](https://x.com/affaanmustafa)
+Open an issue at [OsamaA140/agent-trials](https://github.com/OsamaA140/agent-trials/issues).
 
 ---
 

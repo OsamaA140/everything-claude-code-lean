@@ -1,25 +1,34 @@
-# Everything Claude Code — Lean
+# agent-trials
 
-[![tests](https://github.com/OsamaA140/everything-claude-code-lean/actions/workflows/tests.yml/badge.svg)](https://github.com/OsamaA140/everything-claude-code-lean/actions/workflows/tests.yml)
+[![tests](https://github.com/OsamaA140/agent-trials/actions/workflows/tests.yml/badge.svg)](https://github.com/OsamaA140/agent-trials/actions/workflows/tests.yml)
 
-Production-ready agents, skills, hooks, commands, and rules for Claude Code — a **token-optimized fork** of [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) that keeps the coverage and cuts the cost.
+**Prove an agent does its job before you trust it.** Hire-ready employee templates, a deterministic trial harness that grades agents against fixtures with planted mistakes, zero-token safety hooks, and a token-lean agent/skill set for Claude Code.
 
-## Why this fork: it barely costs tokens
+## Trials: behavioural testing for agents
 
-Most plugin stacks quietly tax every session and every invocation. This one doesn't:
+Everyone ships agents. Nobody proves they work. A **trial** hands an employee a fake business with mistakes planted in it and checks deterministically whether it caught them, stayed inside its write scope, and got the arithmetic right.
 
-Measured, not claimed — full methodology and reproduction steps in [docs/BENCHMARK.md](docs/BENCHMARK.md):
+```bash
+node scripts/trial.js prepare trials/ops-manager-smb --workspace /tmp/t1
+node scripts/trial.js report  trials/ops-manager-smb --runs /tmp/t1,/tmp/t2,/tmp/t3
+```
 
-| | This fork | Upstream ECC (measured @ e4e4163) |
+The headline metric is **pass^k** — passed in *every* run, not merely once — because one success is capability, not reliability. No LLM judge is involved: [judge style bias runs 0.76-0.92](https://arxiv.org/abs/2604.23178), which grades prose instead of correctness. Three fixtures ship, including two held-out businesses used to separate judgement from memorisation. Methodology, measured results, and a retracted finding in [docs/TRIALS.md](docs/TRIALS.md).
+
+## Token cost: measured, not claimed
+
+Most stacks quietly tax every session and every invocation. Full methodology and reproduction steps in [docs/BENCHMARK.md](docs/BENCHMARK.md):
+
+| | agent-trials | A full-size stack (measured) |
 |---|---|---|
 | Always-on context cost | **~1,260 tokens** for all 26 skills + 9 agents | ~93,000 tokens for a full checkout |
 | Avg agent invocation | **623 tokens** | 1,605 tokens (**61% less**) |
 | Avg skill invocation | **455 tokens** | 2,203 tokens (**79% less**) |
 | Avg command invocation | **189 tokens** | 970 tokens (**81% less**) |
 | Hooks (secret blocking, command guard, formatting) | **0 tokens** — they run in the harness, not the model | 0 (same mechanism) |
-| Verification | 100/100 unit tests, CI on Node 20/22, guards live-fired in real sessions | — |
+| Verification | 134 unit tests, CI on Node 20/22, guards live-fired in real sessions | — |
 
-(Fair-comparison note: upstream is a marketplace meant to be partially enabled, and covers far more ground — the per-invocation averages are the like-for-like numbers. Details and caveats in the benchmark doc.)
+(Fair-comparison note: the comparison stack is a marketplace meant to be partially enabled and covers far more ground, so the per-invocation averages are the like-for-like numbers. Details and caveats in the benchmark doc.)
 
 How: agents/skills state *when and why*, not re-teach *how* (Claude already knows the syntax); commands are thin pointers to agents instead of duplicating them; execution agents run on Sonnet with Opus reserved for architecture, planning, and security; and all enforcement lives in zero-token hooks. Full change log in `OPTIMIZATION.md` and `CHANGELOG.md`.
 
@@ -52,8 +61,8 @@ mcp-configs/ Example MCP server configs (replace YOUR_*_HERE placeholders)
 
 **As a plugin (recommended):**
 ```bash
-/plugin marketplace add <path-or-repo-you-host-this-at>
-/plugin install everything-claude-code@everything-claude-code
+/plugin marketplace add OsamaA140/agent-trials
+/plugin install agent-trials@agent-trials
 ```
 
 **Manual:**
@@ -100,5 +109,8 @@ Don't enable every MCP at once — budget ~20-30 configured, <10 enabled per pro
 node tests/run-all.js
 ```
 
-## Credit & License
-MIT, upstream by [Affaan Mustafa](https://x.com/affaanmustafa) — [original repo](https://github.com/affaan-m/everything-claude-code) (10+ months of production use, Anthropic x Forum Ventures hackathon winner). This fork only compresses/restructures for token efficiency; all credit for the underlying content and design goes upstream. Use freely, modify as needed.
+## License & Notice
+
+MIT — see [LICENSE](LICENSE). Use freely, modify as needed.
+
+The trial harness, guards library, agent validator, benchmark, employee templates, fixtures, and test suite are original to this project. Some agent, skill, command, and rule definitions, and parts of the cross-platform hook scripts, derive from [everything-claude-code](https://github.com/affaan-m/ECC) by Affaan Mustafa, used under the MIT License.

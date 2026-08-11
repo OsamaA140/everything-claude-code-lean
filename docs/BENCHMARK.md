@@ -42,7 +42,7 @@ Measured 2026-08-02. This repo v2.0.1 vs upstream [affaan-m/ECC](https://github.
 ## Reproduce it yourself
 
 ```bash
-git clone https://github.com/OsamaA140/everything-claude-code-lean && cd everything-claude-code-lean
+git clone https://github.com/OsamaA140/agent-trials && cd agent-trials
 git clone --depth 1 https://github.com/affaan-m/ECC /tmp/upstream-ecc
 node scripts/benchmark.js /tmp/upstream-ecc
 ```

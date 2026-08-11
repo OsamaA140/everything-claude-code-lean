@@ -1,43 +1,41 @@
 {
-  "name": "everything-claude-code",
+  "name": "agent-trials",
   "owner": {
-    "name": "Affaan Mustafa",
-    "email": "affaan@example.com"
+    "name": "Osama",
+    "url": "https://github.com/OsamaA140"
   },
   "metadata": {
-    "description": "Token-optimized fork of everything-claude-code - same coverage, a fraction of the context cost"
+    "description": "Agent trials, employee templates, and token-lean Claude Code configuration"
   },
   "plugins": [
     {
-      "name": "everything-claude-code",
+      "name": "agent-trials",
       "source": "./",
-      "description": "Token-lean Claude Code stack: 9 agents, 26 skills, tested zero-token safety hooks - ~1,260 always-on tokens total, 70-80% cheaper per invocation than the upstream originals",
+      "description": "Behavioural trials for Claude Code agents: employee templates, deterministic pass^k grading, zero-token safety hooks, token-lean agents and skills.",
       "author": {
-        "name": "Affaan Mustafa"
+        "name": "Osama"
       },
-      "homepage": "https://github.com/affaan-m/everything-claude-code",
-      "repository": "https://github.com/affaan-m/everything-claude-code",
+      "homepage": "https://github.com/OsamaA140/agent-trials",
+      "repository": "https://github.com/OsamaA140/agent-trials",
       "license": "MIT",
       "keywords": [
         "agents",
-        "skills",
+        "agent-evaluation",
+        "trials",
+        "employee-templates",
         "hooks",
-        "commands",
-        "tdd",
-        "code-review",
         "security",
-        "best-practices"
+        "token-optimization"
       ],
       "category": "workflow",
       "tags": [
         "agents",
-        "skills",
+        "agent-evaluation",
+        "trials",
+        "employee-templates",
         "hooks",
-        "commands",
-        "tdd",
-        "code-review",
         "security",
-        "best-practices"
+        "token-optimization"
       ]
     }
   ]
