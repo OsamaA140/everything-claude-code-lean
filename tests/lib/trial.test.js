@@ -141,6 +141,29 @@ run('detects scope creep alongside a valid report', () => {
   assert.ok(!scope.passed, 'writing .gitignore must fail the scope assertion');
 });
 
+run('REGRESSION: flags an artifact still being written', () => {
+  // Grading a half-written file produced a phantom "flaky" result in this
+  // repo's own history. A just-touched artifact must be marked unsettled.
+  const ws = makeWorkspace('unsettled', {
+    baseline: [],
+    produced: { 'company/reports/2026-08-10-operations.md': 'net -$4,170' }
+  });
+  const r = grade(null, SPEC, ws);
+  assert.strictEqual(r.unsettled, true, 'a freshly written artifact must be flagged');
+});
+
+run('does not flag a settled artifact', () => {
+  const ws = makeWorkspace('settled', {
+    baseline: [],
+    produced: { 'company/reports/2026-08-10-operations.md': 'net -$4,170' }
+  });
+  const p = path.join(ws, 'company', 'reports', '2026-08-10-operations.md');
+  const old = new Date(Date.now() - 120000);
+  fs.utimesSync(p, old, old);
+  const r = grade(null, SPEC, ws);
+  assert.strictEqual(r.unsettled, false, 'an old artifact must not be flagged');
+});
+
 console.log('\naggregate (pass^k vs pass@k):');
 const mkRun = flags => ({
   results: [{ id: 'a', kind: 'must', why: '', passed: flags[0], detail: '' }]

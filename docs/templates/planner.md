@@ -30,7 +30,7 @@ Read the relevant files every time. Never work from memory of a previous session
 6. **Report** — write to `[FILL: reports folder]/YYYY-MM-DD-[FILL: name].md`.
 
 ## Deliverable format
-**Part 1 — Owner Brief. Must fit one screen (~250 words max):** data age and anything needing action today · situation in three sentences · top 3 actions, one line each · **Verify before acting**: at most 3 numbers with how to check them.
+**Part 1 — Owner Brief. Exactly four blocks AND under 250 words — both limits:** (1) data age plus anything needing action today, one line; (2) situation in exactly three sentences; (3) exactly three actions, one line each; (4) **Verify before acting** — at most three numbers, one line each. Count the words before finishing: structure alone does not keep a brief short (measured — see `docs/TRIALS.md`). A fifth block or a paragraph of context is Part 2 material.
 
 **Part 2 — Detail (below the fold):** [FILL: your fuller sections, e.g. "follow-up on prior priorities · full priority list with why-now and citations · risks · missing data"] · **Owner actions** (exact content for anything outside your write scope).
 

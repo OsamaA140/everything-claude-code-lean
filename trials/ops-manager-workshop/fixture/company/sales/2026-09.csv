@@ -1,0 +1,5 @@
+date,client,invoice,amount_usd,status
+2026-09-03,Cyclepath Stores,INV-605,3400,paid
+2026-09-10,Riverside Rentals,INV-606,900,unpaid
+2026-09-18,Peak Couriers,INV-607,1700,paid
+2026-09-25,Uni Campus Hub,INV-608,600,unpaid

@@ -39,18 +39,37 @@ Every assertion held in all three runs, including the two that catch the failure
 A second business the template has never seen: event catering instead of design, different figures, 45/90-day notice periods instead of 30/60, a different owner law (no equipment purchases instead of no hiring), and an added twist — August **bills a $1,340 profit while collecting a $1,760 cash loss**, so pattern-matching "loss month" fails in both directions. The template was **not** revised against it before or after.
 
 ```
-pass^k (every run):     14/15
+pass^k (every run):     15/15
 pass@k (at least once): 15/15
-flaky (inconsistent):    1  -> owner-brief-fits-one-screen
+flaky (inconsistent):   0
 ```
 
-**All thirteen judgement assertions held 3/3** on a business it had never seen: the closed notice window (a date nobody could recall — 2026-08-14, from a 45-day term), the 55-day receivable correctly *not* escalated as 60+, the +63.3% insurance spike, the profit-versus-cash distinction, the still-open FreshLine gate, the owner's equipment-purchase law, and the write-scope boundary. That is generalisation, not recall.
+> **Correction (2026-08-12).** v2.5.0 originally published this as **14/15 with a flaky Owner Brief**. That was wrong, and the cause was a bug in this harness rather than anything the employee did: grading ran while one agent was **still writing its report**, so a half-finished 352-word draft was measured instead of the 277-word final. The corrected figure above is from re-grading the identical workspaces after all agents had finished. `grade` now warns when an artifact was modified in the last 20 seconds (`TRIAL_SETTLE_SECONDS`), with regression tests, because *a file appearing on disk does not mean the agent has finished*. The retracted finding and the failed "fix" it triggered are kept below, since the sequence is more instructive than a clean result.
 
-**The single failure is the one soft rule in the template.** The Owner Brief word budget held in runs 1 and 3 (232 and 255 words) and broke in run 2 (352 words, against a stated ~250 and a graded cap of 300). The pattern is worth naming: *checkable facts generalised perfectly; a stylistic budget did not.* Models comply with structural constraints ("at most three bullets") far more reliably than with numeric prose budgets.
+**All fifteen assertions held 3/3** on a business it had never seen: the closed notice window (a date nobody could recall — 2026-08-14, from a 45-day term), the 55-day receivable correctly *not* escalated as 60+, the +63.3% insurance spike, the profit-versus-cash distinction, the still-open FreshLine gate, the owner's equipment-purchase law, the write-scope boundary, and the Owner Brief length. That is generalisation, not recall.
 
-**This is precisely the failure a single run would have hidden.** pass@k reads 15/15 — flawless. pass^k reads 14/15 — the truth. The original manual trial was k=1 and would have reported the flawless number. That is the ~25-point pass@k↔pass^k gap from the literature, reproduced at small scale in this repo.
+### The retracted finding, and the failed fix it caused
 
-**The fix is deliberately deferred.** Revising the template in response to this fixture would convert the held-out set into another memorisation test. A third fixture is required to validate any change to the length rule.
+This section is kept deliberately. It cost three rounds of runs and is the most useful thing in this document.
+
+Acting on the phantom "flaky word budget", the template's `~250 words max` was replaced with a purely structural rule — *exactly four blocks; situation in exactly three sentences; exactly three actions*. The hypothesis: models obey countable structure more reliably than numeric prose budgets.
+
+**The hypothesis was refuted, on both arms.** Same fixture, same 300-word measurement:
+
+| Owner Brief instruction | catering runs | under cap |
+|---|---|---|
+| word budget only | 235 / 277 / 258 | 3/3 |
+| **structure only** (the "fix") | **344 / 338 / 375** | **0/3** |
+| structure **+** word ceiling | 207 / 243 / 239 | 3/3 |
+
+On the third fixture the structure-only version produced 330 / 415 / 310 — also 0/3. Removing the ceiling made briefs roughly 40% longer while still obeying "four blocks, three sentences": **structure constrains shape, not verbosity.** Three sentences can each run forty words.
+
+The shipped template now carries **both** limits, and says so explicitly with the measurement behind it. Combined, briefs came in tighter than the original (mean 229 vs 256), so the structure does help — it simply cannot replace a ceiling.
+
+**Two lessons, both about the grader rather than the employee:**
+
+1. **Never grade an artifact the agent may still be writing.** File existence is not completion. This produced a phantom failure, which triggered a template change that made the product genuinely worse. Now guarded and regression-tested.
+2. **`MUST_NOT` assertions over natural language are false-positive magnets.** Two failures in the third fixture were my patterns, not the employee: `no-subcontracting` matched reports *quoting the rule as a constraint* ("no subcontracting — that is a hard ceiling"), and `no-false-60-day-claim` matched a checklist line reading "over 60 days — **not yet**, oldest is 54 days". Both now require a recommendation or assertion verb. Re-grading the *same* runs lifted that fixture from 11/15 to 13/15 without re-running anything, because the runs were never wrong.
 
 **Two caveats remain on both results.** k=3 is the affordable floor — "not obviously unreliable" rather than "reliable"; the literature uses k=8+. And deterministic assertions verify facts, not wisdom: a report can pass every check and still advise something foolish.
 

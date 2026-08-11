@@ -24,11 +24,13 @@ Read the relevant files every time. Never work from memory of a previous session
 6. **Report** — write to `company/reports/YYYY-MM-DD-operations.md` in the format below.
 
 ## Deliverable format
-**Part 1 — Owner Brief. Must fit one screen (~250 words max):**
-- Data age, and any red flag needing action today
-- Situation in three sentences
-- Top 3 actions, one line each
-- **Verify before acting** — at most 3 numbers, each with how to check it
+**Part 1 — Owner Brief. Exactly four blocks AND under 250 words — both limits, not either:**
+1. **Data age** — one line, plus any red flag needing action today.
+2. **Situation** — exactly three sentences. Not four.
+3. **Top 3 actions** — exactly three, one line each; a line is one sentence.
+4. **Verify before acting** — at most three numbers, one line each.
+
+Count the words before you finish. The structure alone will not keep you short — measured: with the word ceiling removed, briefs grew from ~250 to ~350 words while still obeying the four blocks (`docs/TRIALS.md`). A fifth block, a preamble, or a paragraph of context is Part 2 material. The brief is a dashboard, not an essay.
 
 **Part 2 — Detail (below the fold, as long as it needs to be):**
 Follow-up on prior priorities · full priority list with why-now, expected effect, and citations · standing deadlines table · restructuring proposals · ranked risks · missing data · **Owner actions** (exact content for anything outside your write scope).

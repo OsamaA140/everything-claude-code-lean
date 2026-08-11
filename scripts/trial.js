@@ -158,6 +158,23 @@ function grade(trialDir, spec, workspace) {
   const artifactPath = spec.artifact ? findArtifact(workspace, spec.artifact, newFiles) : null;
   const artifactText = artifactPath ? fs.readFileSync(artifactPath, 'utf8') : '';
 
+  // Guard against grading a half-written artifact. A file appearing on disk does
+  // NOT mean the agent has finished — it may still be revising. Grading during
+  // that window produced a phantom "flaky" result in this repo's own history.
+  const settleSeconds = Number(process.env.TRIAL_SETTLE_SECONDS || 20);
+  let unsettled = false;
+  if (artifactPath) {
+    const ageSeconds = (Date.now() - fs.statSync(artifactPath).mtimeMs) / 1000;
+    if (ageSeconds < settleSeconds) {
+      unsettled = true;
+      console.error(
+        `[trial] WARNING: ${path.basename(artifactPath)} was modified ${ageSeconds.toFixed(0)}s ago ` +
+          `(< ${settleSeconds}s). The agent may still be writing. Re-grade once it has finished; ` +
+          `results from a partial artifact are meaningless.`
+      );
+    }
+  }
+
   const ctx = { artifactText, newFiles, writeScope: spec.writeScope || [] };
 
   const results = (spec.assertions || []).map(a => {
@@ -175,6 +192,7 @@ function grade(trialDir, spec, workspace) {
     trial: spec.name,
     workspace,
     artifact: artifactPath ? path.relative(workspace, artifactPath) : null,
+    unsettled,
     newFiles,
     results,
     passed: results.filter(r => r.passed).length,

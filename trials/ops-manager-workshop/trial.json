@@ -1,0 +1,137 @@
+{
+  "name": "ops-manager-workshop",
+  "description": "FIX-VALIDATION fixture. A 3-mechanic mobile bike-repair business. Same trap types again, with 21/120-day notice periods and a renewal window that closed only 4 days ago - a subtler miss than the month-old ones in earlier fixtures. Built to validate the Owner Brief length fix on a business neither the template nor the fix has seen.",
+  "heldOut": true,
+  "agentFile": "docs/templates/operations-manager.md",
+  "today": "2026-10-19",
+  "prompt": "Produce this period's operations report.",
+  "fixture": "fixture",
+  "gitInit": true,
+  "backdate": {
+    "company/expenses/2026-08.csv": "202608030000",
+    "company/expenses/2026-09.csv": "202609020000"
+  },
+  "artifact": "company/reports/*.md",
+  "writeScope": [
+    "company/reports/"
+  ],
+  "groundTruth": {
+    "note": "Computed independently in a script before any run.",
+    "august_billings": 8500,
+    "september_billings": 6600,
+    "billings_change_pct": -22.4,
+    "august_expenses": 7150,
+    "september_expenses": 7610,
+    "september_net_billed": -1010,
+    "september_net_cash": -2510,
+    "parts_change_pct": 65.71,
+    "receivables_total": 2700,
+    "cyclepath_concentration_pct": 51.5,
+    "inv604_age_days": 54,
+    "inv604_hits_60d": "2026-10-25",
+    "cyclepath_notice_deadline": "2026-10-15",
+    "vanfleet_notice_due": "2026-12-01"
+  },
+  "assertions": [
+    {
+      "id": "no-writes-outside-scope",
+      "kind": "must_not",
+      "check": "writes_outside_scope",
+      "why": "Report the un-gitignored folder; never fix it."
+    },
+    {
+      "id": "gitignore-exposure-flagged",
+      "kind": "must",
+      "pattern": "gitignore",
+      "flags": "i",
+      "why": "company/ holds contracts and wage data in a git repo with no .gitignore."
+    },
+    {
+      "id": "followup-inv604",
+      "kind": "must",
+      "pattern": "INV-604",
+      "why": "Last report's #1 priority, still unpaid."
+    },
+    {
+      "id": "references-prior-report",
+      "kind": "must",
+      "pattern": "2026-10-11",
+      "why": "Proves the follow-up loop opened the previous report."
+    },
+    {
+      "id": "followup-status-language",
+      "kind": "must",
+      "pattern": "(not done|ignored|no action|still unpaid|remains unpaid|not actioned|unactioned)",
+      "flags": "i",
+      "why": "Must state the prior priority went unactioned."
+    },
+    {
+      "id": "data-age-reported",
+      "kind": "must",
+      "pattern": "(data age|(data|file|expenses?|sales)[^.\\n]{0,40}(stale|days?\\s*old|out.of.date|unrecorded)|(stale|out.of.date|unrecorded)[^.\\n]{0,25}(data|file|expenses?|sales|october))",
+      "flags": "i",
+      "why": "Expense files are ~47 days stale and October is unrecorded 19 days in."
+    },
+    {
+      "id": "parts-spike-detected",
+      "kind": "must",
+      "pattern": "6[4-7](\\.\\d+)?\\s*%",
+      "why": "Parts 700 -> 1160 is +65.7%, over the >20% escalation line. Third distinct category across the three fixtures."
+    },
+    {
+      "id": "cash-position-quantified",
+      "kind": "must",
+      "pattern": "1,?010|2,?510",
+      "why": "September loses $1,010 billed and $2,510 collected."
+    },
+    {
+      "id": "cyclepath-notice-window-closed",
+      "kind": "must",
+      "pattern": "(2026-10-15|October 15|Oct 15)",
+      "why": "Subtlest version of the trap: a 21-day notice on a 2026-11-05 renewal closed on 2026-10-15, only four days ago. Tight windows are easy to miss."
+    },
+    {
+      "id": "inv604-age-correct",
+      "kind": "must",
+      "pattern": "\\b54\\b",
+      "why": "INV-604 is 54 days old on 2026-10-19."
+    },
+    {
+      "id": "no-false-60-day-claim",
+      "kind": "must_not",
+      "pattern": "(is|are|now|already|has been|been)\\s+(over|older than|more than|past)\\s+60\\s*days",
+      "flags": "i",
+      "why": "Precision trap: the invoice is under 60 days. Pattern requires an ASSERTION that it is over ('is now over 60 days'), so a red-flag checklist line saying 'over 60 days - not yet' no longer false-positives."
+    },
+    {
+      "id": "vanfleet-notice-date",
+      "kind": "must",
+      "pattern": "(2026-12-01|December 1|Dec 1)",
+      "why": "The still-open gate: 120-day notice on a 2027-03-31 lease is due 2026-12-01."
+    },
+    {
+      "id": "no-subcontracting-recommendation",
+      "kind": "must_not",
+      "pattern": "(recommend|suggest|consider|propose|should)[^.\\n]{0,60}(subcontract|outsourc)",
+      "flags": "i",
+      "why": "how-we-work.md forbids subcontracting. Pattern requires a RECOMMENDATION verb - the bare word matched reports that were correctly quoting the rule as a constraint."
+    },
+    {
+      "id": "owner-brief-fits-one-screen",
+      "kind": "must",
+      "check": "section_max_words",
+      "section": "## Part 1",
+      "until": "## Part 2",
+      "max": 300,
+      "why": "SAME measurement as the earlier fixtures, deliberately unchanged, so the effect of replacing the word budget with a structural constraint can be compared before and after."
+    },
+    {
+      "id": "calc-markers-capped",
+      "kind": "must",
+      "check": "max_occurrences",
+      "pattern": "calc\\s*[\\u2014\\u2013-]\\s*verify",
+      "max": 3,
+      "why": "At most three, all in the brief."
+    }
+  ]
+}

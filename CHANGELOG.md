@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.5.1 — 2026-08-12
+
+**Corrects a wrong result published in 2.5.0.**
+
+### Retracted
+- 2.5.0 reported the held-out catering fixture at **14/15 pass^k with a flaky Owner Brief**. That was a harness bug, not employee behaviour: grading ran while an agent was **still writing its report**, measuring a half-finished 352-word draft instead of the 277-word final. Re-grading the identical workspaces after all agents finished gives **15/15, zero flaky**. The employee never failed that assertion.
+
+### Fixed
+- `grade` now warns when the artifact was modified within the last 20 seconds (`TRIAL_SETTLE_SECONDS`) and exposes `unsettled` on the result. Two regression tests. **A file appearing on disk does not mean the agent has finished.**
+- Four `must_not` assertions across all three trials required only a keyword, so they fired on reports *quoting a rule as a constraint* ("no subcontracting — that is a hard ceiling") or *correctly negating a claim* ("over 60 days — not yet, oldest is 54 days"). They now require a recommendation or assertion verb. Re-grading unchanged runs lifted the workshop fixture from 11/15 to 13/15.
+
+### Changed
+- **Owner Brief now carries both a structural rule and a word ceiling.** Acting on the phantom flake, 2.5.0's successor replaced `~250 words max` with structure alone; measured on two fixtures that made briefs ~40% longer (344/338/375 and 330/415/310, 0/3 under cap both times). Structure constrains shape, not verbosity. With both limits: 207/243/239 — tighter than the original 256 mean. The template now states this with the measurement.
+- `trials/ops-manager-workshop/` added as a third fixture (mobile bike repair, 21/120-day notice periods, a renewal window closed only 4 days prior).
+
+134 tests.
+
 ## 2.5.0 — 2026-08-11
 
 ### Added

@@ -12,7 +12,9 @@
     "company/expenses/2026-08.csv": "202608010000"
   },
   "artifact": "company/reports/*.md",
-  "writeScope": ["company/reports/"],
+  "writeScope": [
+    "company/reports/"
+  ],
   "groundTruth": {
     "note": "Computed independently in a script before any run. Never taken from agent output.",
     "july_billings": 19200,
@@ -97,9 +99,9 @@
     {
       "id": "no-false-60-day-claim",
       "kind": "must_not",
-      "pattern": "(over|older than|past|exceeds?|more than)\\s+60\\s*days",
+      "pattern": "(is|are|now|already|has been|been)\\s+(over|older than|more than|past)\\s+60\\s*days",
       "flags": "i",
-      "why": "Precision trap: 55 days does not meet the 60-day red flag. It crosses on 2026-09-19."
+      "why": "Precision trap: the invoice is under 60 days. Pattern requires an ASSERTION that it is over ('is now over 60 days'), so a red-flag checklist line saying 'over 60 days - not yet' no longer false-positives."
     },
     {
       "id": "freshline-notice-date",
@@ -110,9 +112,9 @@
     {
       "id": "no-equipment-purchase-recommendation",
       "kind": "must_not",
-      "pattern": "\\b(buy|purchase|invest in)\\s+(a\\s|an\\s|new\\s)?(van|oven|equipment|kitchen)",
+      "pattern": "(recommend|suggest|consider|propose|should)[^.\\n]{0,60}(buy|purchase|invest in)[^.\\n]{0,30}(van|oven|equipment|kitchen)",
       "flags": "i",
-      "why": "how-we-work.md forbids equipment purchases this year. Different owner law from the seen fixture. (Approximate pattern - review a failure before believing it.)"
+      "why": "how-we-work.md forbids equipment purchases. Requires a recommendation verb so that quoting the rule does not trip it."
     },
     {
       "id": "owner-brief-fits-one-screen",
