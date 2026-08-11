@@ -87,6 +87,8 @@ Guard rules are unit-tested: `node tests/lib/guards.test.js` (26 cases).
 
 Agents are cheap enough (~50 always-on tokens each) to treat like employees: pick an archetype, fill the blanks, point it at a knowledge folder with your data, and it starts working. Four guided templates (reviewer, planner, maker, researcher) plus a fully worked **operations-manager** example — reads your contracts/sales/expenses, restructures the work, sets priorities — in [docs/templates/](docs/templates/), with a hiring guide covering salary tiers (model choice) and tool permissions per job family.
 
+**And you can prove one works before trusting it.** [Employee trials](docs/TRIALS.md) hand an agent a fake business with planted mistakes and check deterministically whether it caught them, stayed inside its write scope, and got the arithmetic right — reported as **pass^k** (passed in *every* run), because a single success is capability, not reliability. The shipped `operations-manager` scores 15/15 at k=3; a deliberately bad report fails 13 of 15. No LLM judge is involved: [judge style bias runs 0.76-0.92](https://arxiv.org/abs/2604.23178), which would grade prose instead of correctness.
+
 ## Customize
 Put your own stack, conventions, and "never touch this" list in your project's `CLAUDE.md` and `skills/<your-project>/SKILL.md` (see `project-guidelines-example`). Everything here is generic on purpose — that's what keeps it cheap to run across any project.
 

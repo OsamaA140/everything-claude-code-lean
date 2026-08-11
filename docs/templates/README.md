@@ -4,7 +4,7 @@ An agent is one markdown file = one employee. Fill the blanks, place the file, a
 
 > **Before anything else, read [LIMITATIONS.md](LIMITATIONS.md)** — what these employees fundamentally cannot do and how to work around it. Five minutes there prevents most disappointments.
 
-## How to hire (6 steps)
+## How to hire (7 steps)
 
 1. **Pick an archetype** below and copy it.
 2. **Fill every `[FILL: …]` blank.** Delete the guidance text as you go.
@@ -14,7 +14,12 @@ An agent is one markdown file = one employee. Fill the blanks, place the file, a
    ```bash
    node scripts/validate-agent.js path/to/your-agent.md
    ```
-6. **Place the finished file** in your project's `.claude/agents/` (this project only) or `~/.claude/agents/` (all projects). Restart the session. Done — Claude now delegates matching work to them automatically.
+6. **Trial it before you trust it.** Validation proves the file is well-formed; a trial proves it does the job. Run the shipped one to see what a trial looks like, then write one for your own employee — a fake version of your business with mistakes planted in it, and deterministic checks for whether they were caught:
+   ```bash
+   node scripts/trial.js prepare trials/ops-manager-smb --workspace /tmp/t1
+   ```
+   Full guide in [../TRIALS.md](../TRIALS.md). Worth the hour before an employee touches real books.
+7. **Place the finished file** in your project's `.claude/agents/` (this project only) or `~/.claude/agents/` (all projects). Restart the session. Done — Claude now delegates matching work to them automatically.
 
 ## Confidentiality — read before filling the knowledge folder
 

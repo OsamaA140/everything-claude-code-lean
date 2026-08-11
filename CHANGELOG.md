@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.4.0 — 2026-08-11
+
+Behavioural testing for agent files. `validate-agent.js` proves a file is well-formed; a **trial** proves it does the job.
+
+### Added
+- **`scripts/trial.js`** — deterministic trial harness. `prepare` builds a clean workspace from a versioned fixture (copy, backdate files, `git init`, snapshot baseline), `grade` evaluates one run, `report --runs a,b,c` aggregates to **pass^k**. Assertion kinds: `must`/`must_not` regex, `writes_outside_scope` (filesystem diff — the scope-creep check), `section_max_words`, `max_occurrences`.
+- **`trials/ops-manager-smb/`** — the eight-trap design studio from the v2.3.0 manual trial, now versioned and reproducible, with ground truth computed independently and recorded in the spec.
+- **`docs/TRIALS.md`** — methodology, spec reference, and measured results.
+- 16 engine unit tests (132 total).
+
+### Methodology, and why it differs from the norm
+- **No LLM-as-judge.** Judge style bias is measured at 0.76-0.92 ([arXiv 2604.23178](https://arxiv.org/abs/2604.23178)); a judge would reward a well-written report regardless of whether its numbers were right. All grading is regex or filesystem fact.
+- **MUST and MUST_NOT.** Required-only grading misses agents exceeding their mandate — the exact v2.3.0 failure ([arXiv 2607.25398](https://arxiv.org/abs/2607.25398)).
+- **pass^k over pass@1.** One success is capability, not reliability; reported gaps reach ~25 points ([arXiv 2603.29231](https://arxiv.org/pdf/2603.29231)).
+
+### Measured
+`operations-manager` v2.3.0 at k=3: **15/15 pass^k, 0 flaky**. Negative control (plausible but wrong report + stray file): fails 13/15. Caveats stated in `docs/TRIALS.md` — chiefly that the template was revised after seeing these traps, so a held-out fixture is needed to separate judgement from memorisation.
+
+### Fixed (found while building)
+- Grader would have resolved a fixture's **pre-existing** report as the agent's output, handing out free passes when an agent wrote nothing. Artifact selection is now restricted to files the agent created; regression-tested.
+- Two assertions passed on garbage in the negative control — `data-age-reported` matched an *invoice* being "60 days old", `followup-status-language` matched "outstanding" in unrelated prose. Both tightened, plus a new `references-prior-report` check.
+
 ## 2.3.0 — 2026-08-10
 
 Fixes from a live employment trial: a fixture business with eight planted traps was handed to the `operations-manager`. It caught all eight with fully correct arithmetic — and broke two of its own rules doing it. Those breakages are what this release fixes.

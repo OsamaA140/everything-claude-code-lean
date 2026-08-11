@@ -1,0 +1,5 @@
+date,client,invoice,amount_usd,status
+2026-06-05,Alfa Retail,INV-219,4000,paid
+2026-06-12,Bravo Cafe,INV-220,2500,paid
+2026-06-20,Alfa Retail,INV-221,3500,unpaid
+2026-06-28,Delta Gym,INV-222,1800,paid
