@@ -1,6 +1,6 @@
 {
   "name": "agent-trials",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Behavioural trials for Claude Code agents: hire-ready employee templates, deterministic pass^k grading against fixtures with planted traps, zero-token safety hooks (secret-leak + destructive-command blocking), and a token-lean agent/skill set (~1,260 always-on tokens).",
   "author": {
     "name": "Osama",

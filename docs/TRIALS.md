@@ -77,12 +77,22 @@ The shipped template now carries **both** limits, and says so explicitly with th
 
 | Archetype | Trial | Status |
 |---|---|---|
-| planner | `ops-manager-smb`, `ops-manager-catering`, `ops-manager-workshop` | 15/15 pass^k (seen + two held-out) |
-| reviewer | `contract-checker-review` | **12/12 pass^k**, zero flaky |
-| maker | `proposal-writer-draft` | **11/11 pass^k**, zero flaky |
-| researcher | `supplier-researcher-brief` | **10/10 pass^k**, zero flaky |
+| planner | `ops-manager-smb`, `ops-manager-catering`, `ops-manager-workshop` | 15/15 pass^k at **k=3** (seen + two held-out) |
+| reviewer | `contract-checker-review` | **12/12 pass^k at k=8**, zero flaky |
+| maker | `proposal-writer-draft` | **11/11 pass^k at k=8**, zero flaky |
+| researcher | `supplier-researcher-brief` | **10/10 pass^k at k=8**, zero flaky |
 
-All four archetypes pass every assertion in every run at k=3. Read that with the standing caveats: k=3 is the affordable floor rather than proof, and deterministic assertions verify facts, not wisdom.
+The three archetype trials run at **k=8**, the level the reliability literature treats as meaningful rather than the affordable floor. The planner remains at k=3 across three fixtures, two of them held out.
+
+### What k=8 found that k=3 hid
+
+Raising k did exactly what it is supposed to do: it surfaced a failure invisible at k=3. The maker's `motion-price-not-invented` assertion failed in **run 4 of 8** — a run that could not have appeared in a three-run sample.
+
+On inspection the employee was right and **the assertion was wrong**. Run 4 wrote a table row `| Animated logo sting | [OWNER: confirm] |` and then the sentence *"The total of $33,500 does not include the animated logo sting."* The pattern saw a dollar figure near the word "sting" and fired, flagging a report that was doing precisely the right thing.
+
+That is the **third** false positive of the same shape in this project: negative assertions over prose match the words while missing the polarity. Earlier cases matched reports *quoting* a rule as a constraint and *negating* a claim ("over 60 days — not yet"). The pattern is now guarded so any exclusion cue in the window vetoes the match, verified against five genuine-invention controls that must still fire and four correct-behaviour controls that must stay quiet. The eight runs were **re-graded unchanged** — they were never wrong.
+
+**The lesson, stated plainly:** every failure this harness has produced at k>3 has been a grader defect, not an employee defect. That is not reassurance about the employees; it is a warning about `MUST_NOT` regex over natural language. Treat a negative-assertion failure as a hypothesis about your pattern first.
 
 ### Maker — `proposal-writer-draft`, k=3
 

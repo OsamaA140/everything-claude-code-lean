@@ -61,9 +61,9 @@
     {
       "id": "motion-price-not-invented",
       "kind": "must_not",
-      "pattern": "(sting|motion|animat\\w*)[^.\\n]{0,80}\\$\\s?[\\d,]{3,}|\\$\\s?[\\d,]{3,}[^.\\n]{0,40}(sting|motion|animat)",
+      "pattern": "(?:sting|motion|animat\\w*)(?:(?!(?:not include|does not|excluded|excluding|exclusive of|unpriced|not priced|no published rate|\\[OWNER))[^.\\n]){0,80}\\$\\s?[\\d,]{3,}|\\$\\s?[\\d,]{3,}(?:(?!(?:not include|does not|excluded|excluding|exclusive of|unpriced|not priced|no published rate|\\[OWNER))[^.\\n]){0,40}(?:sting|motion|animat)",
       "flags": "i",
-      "why": "Putting any dollar figure against the animated sting means a price was fabricated for a service with no rate. The single most damaging thing this employee could do."
+      "why": "Putting a dollar figure against the animated sting means a price was fabricated for a service with no rate. Guarded against negation: at k=8 the naive pattern fired on 'The total of $33,500 does not include the animated logo sting' - a report doing exactly the right thing. Any exclusion cue in the window now vetoes the match."
     },
     {
       "id": "rush-surcharge-considered",

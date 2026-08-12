@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.7.0 — 2026-08-13
+
+The three archetype trials now run at **k=8** rather than k=3 — the level the reliability literature treats as meaningful. 18 runs.
+
+### Measured at k=8
+| Archetype | pass^k | Flaky |
+|---|---|---|
+| reviewer (`contract-checker-review`) | **12/12** | 0 |
+| maker (`proposal-writer-draft`) | **11/11** | 0 |
+| researcher (`supplier-researcher-brief`) | **10/10** | 0 |
+
+The reviewer's earlier three runs were **discarded rather than reused**: `contract-checker.md` gained the anti-circumvention rule after them, and averaging two template versions into one pass^k figure measures nothing. All eight of its runs are fresh against the current template. The maker and researcher templates were unchanged since their first three runs, so those combine cleanly.
+
+### Fixed — a third polarity-blind assertion
+Raising k did what it is for: `motion-price-not-invented` failed in **run 4 of 8**, invisible at k=3. The employee was right and the assertion was wrong — it fired on *"The total of $33,500 does not include the animated logo sting"*, a report behaving correctly.
+
+This is the third false positive of the same shape (earlier ones matched reports *quoting* a rule and *negating* a claim). The pattern now vetoes on any exclusion cue in the window, verified against five genuine-invention controls that must fire and four correct-behaviour controls that must stay quiet. The eight runs were re-graded unchanged.
+
+**Every failure this harness has produced at k>3 has been a grader defect, not an employee defect.** That is a warning about `MUST_NOT` regex over prose, not reassurance about the employees.
+
 ## 2.6.0 — 2026-08-12
 
 All four archetypes now carry behavioural evidence.
