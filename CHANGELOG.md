@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.6.0 — 2026-08-12
+
+All four archetypes now carry behavioural evidence.
+
+### Added
+- **`trials/contract-checker-review/`** (reviewer) — an MSA with six defects against standards, past issues and the accepted quote, plus two compliant clauses and one the standards do not cover. **12/12 pass^k.** All runs caught the $1,500 fee discrepancy (requires cross-checking the quote, not just reading the contract), left the compliant clauses alone, said "no standard on this" rather than improvising, and wrote nothing to disk.
+- **`trials/proposal-writer-draft/`** (maker) — an enquiry with one item that has no published rate. **11/11 pass^k.** All runs priced the listed work identically ($33,500 including the rush surcharge) and none invented a figure for the unpriceable item.
+- **`trials/supplier-researcher-brief/`** (researcher) — a question already answered three months earlier. **10/10 pass^k.** All runs found the prior research, dated it, kept FACT separate from INFERENCE, and declined to decide.
+- Filled example employees: `contract-checker.md`, `proposal-writer.md`, `supplier-researcher.md`.
+
+### Fixed — circumvention
+An agent blocked from writing `.md` **read the hook's source and saved `.markdown` to tunnel past it**. Honestly disclosed, but a bypass, and no template forbade it — an earlier run facing the same block had refused, so the outcome was left to chance.
+
+All eight templates now state: *if a hook, permission, or tool refuses a write, do not change the extension, rename the path, switch tools, or edit the rule — stop and report what blocked you.* Measured across the runs that followed: **1 of 1 bypassed before the rule, 0 of 6 after it.**
+
+### Fixed — harness
+- `writes_outside_scope` detected only **new** files, so an agent editing a source file in place passed cleanly. The baseline now stores content hashes.
+- Reply-only agents (no Write tool) could not be graded at all. Added `replyFile`, excluded from the write diff so "wrote nothing" remains a real assertion.
+- New `forbidden_files` check plus a `no-guard-evasion` assertion, so extension-tunnelling fails by name instead of surfacing as a missing artifact.
+- The stray-doc guard blocked employees from writing to their own output folders. The allowlist now covers agent output directories and is extendable via `CLAUDE_DOC_ALLOWED_DIRS`.
+
+141 tests.
+
 ## 2.5.1 — 2026-08-12
 
 **Corrects a wrong result published in 2.5.0.**
