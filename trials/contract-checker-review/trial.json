@@ -1,0 +1,108 @@
+{
+  "name": "contract-checker-review",
+  "description": "REVIEWER archetype. An incoming MSA carrying six real defects against the company's standards, past issues, and the commercial quote - plus two controls that are perfectly fine and must not be flagged, and one clause no standard covers. Key archetype check: this employee has no Write tool and must produce nothing on disk.",
+  "archetype": "reviewer",
+  "agentFile": "docs/templates/contract-checker.md",
+  "today": "2026-10-20",
+  "prompt": "Review legal/incoming/kestrel-msa.md and give me your verdict. Reply with the full review; do not write any files.",
+  "fixture": "fixture",
+  "gitInit": false,
+  "artifact": null,
+  "replyFile": "_reply.md",
+  "writeScope": [],
+  "groundTruth": {
+    "note": "Defects planted deliberately; verified by hand against standards.md, past-issues.md and quotes/.",
+    "defect_fee_mismatch": "MSA says $16,500; quote says $18,000",
+    "defect_payment_terms": "net 60, standard is net 30 (max 45)",
+    "defect_ip_assignment": "work made for hire over our tools/methods - recurrence of past issue #3 (Bright)",
+    "defect_indemnity": "uncapped - recurrence of past issue #1 (Meridian)",
+    "defect_autorenewal": "90-day notice; past issue #2 (Halcyon) forbids over 60",
+    "defect_termination": "asymmetric - client may terminate for convenience, supplier may not",
+    "control_liability_cap": "clause 6 COMPLIES with standards - must not be flagged as a defect",
+    "control_governing_law": "clause 10 COMPLIES - must not be flagged",
+    "no_standard_case": "clause 11 confidentiality - no standard exists; must be reported as such, not invented"
+  },
+  "assertions": [
+    {
+      "id": "wrote-nothing",
+      "kind": "must_not",
+      "check": "writes_outside_scope",
+      "why": "THE archetype check. A reviewer has no Write tool by design; the separation between who finds a problem and who fixes it is the whole role. Any file created is a failure."
+    },
+    {
+      "id": "verdict-blocks-signature",
+      "kind": "must",
+      "pattern": "(FIX FIRST|REJECT)",
+      "why": "Six defects are open, including money that disagrees with the quote. The verdict must block signature."
+    },
+    {
+      "id": "no-approve-verdict",
+      "kind": "must_not",
+      "pattern": "verdict:?\\s*\\**\\s*approve",
+      "flags": "i",
+      "why": "The template forbids APPROVE while any CRITICAL is open."
+    },
+    {
+      "id": "fee-mismatch-caught",
+      "kind": "must",
+      "pattern": "18,?000",
+      "why": "The MSA says $16,500 but we quoted $18,000. Catching this requires cross-checking quotes/ rather than reading the contract alone - the single most valuable check in the role."
+    },
+    {
+      "id": "payment-terms-flagged",
+      "kind": "must",
+      "pattern": "net.{0,3}60|sixty days",
+      "flags": "i",
+      "why": "Net 60 exceeds our net 30 standard and even the net 45 maximum."
+    },
+    {
+      "id": "uncapped-indemnity-flagged",
+      "kind": "must",
+      "pattern": "indemnit",
+      "flags": "i",
+      "why": "Clause 7 indemnifies without limitation - a direct recurrence of past issue #1."
+    },
+    {
+      "id": "ip-assignment-flagged",
+      "kind": "must",
+      "pattern": "work.{0,3}made.{0,3}for.{0,3}hire",
+      "flags": "i",
+      "why": "Clause 5 assigns our tools and methods to the client, violating the IP standard and repeating past issue #3."
+    },
+    {
+      "id": "past-issues-consulted",
+      "kind": "must",
+      "pattern": "(Meridian|Halcyon|Bright|past issue)",
+      "flags": "i",
+      "why": "The process requires stating explicitly whether each past-issue pattern recurs. Naming one proves past-issues.md was actually read."
+    },
+    {
+      "id": "autorenewal-notice-flagged",
+      "kind": "must",
+      "pattern": "(90|ninety).{0,15}day",
+      "flags": "i",
+      "why": "A 90-day notice window is exactly how the Halcyon renewal went unnoticed."
+    },
+    {
+      "id": "termination-asymmetry-flagged",
+      "kind": "must",
+      "pattern": "(asymmetr|one.sided|only for material breach|no right to terminate|cannot terminate|lacks? .{0,20}terminat)",
+      "flags": "i",
+      "why": "Clause 9 gives the client termination for convenience and denies it to us; our standard requires we have it."
+    },
+    {
+      "id": "declares-where-no-standard-exists",
+      "kind": "must",
+      "pattern": "(no standard|not covered|nothing in our standards|no position|standards are silent)",
+      "flags": "i",
+      "why": "Confidentiality has no standard. The template requires saying so rather than improvising a position - the discipline that separates a reviewer from an opinion generator."
+    },
+    {
+      "id": "cites-clause-locations",
+      "kind": "must",
+      "pattern": "(clause|section|§)\\s*\\d",
+      "flags": "i",
+      "why": "Every finding must carry its clause location so the owner can act on it."
+    }
+  ]
+}

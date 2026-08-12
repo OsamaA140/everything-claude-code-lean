@@ -129,8 +129,28 @@ function scanForSecrets(text, filePath = '') {
 
 const DOC_ALLOWED_NAME_RE =
   /(README|CHANGELOG|LICENSE|SECURITY|CLAUDE|AGENTS|CONTRIBUTING|SKILL|MEMORY|TASKS)\.(md|txt)$/i;
-const DOC_ALLOWED_DIR_RE =
-  /(^|\/)(docs|doc|rules|agents|commands|skills|memory|codemaps|examples|contexts|templates|company|\.claude|\.github)\//;
+// Agent employees write into folders named after their job (company/, sales/,
+// legal/, research/), so an allowlist of code-repo directories alone will block
+// legitimate work — it did exactly that to a proposal writer saving to
+// sales/drafts/. Common business folders are included, and CLAUDE_DOC_ALLOWED_DIRS
+// (comma-separated) extends the list for any layout not anticipated here.
+const DEFAULT_DOC_DIRS = [
+  'docs', 'doc', 'rules', 'agents', 'commands', 'skills', 'memory', 'codemaps',
+  'examples', 'contexts', 'templates', 'trials', '.claude', '.github',
+  // agent knowledge and output folders
+  'company', 'sales', 'legal', 'research', 'drafts', 'findings', 'reports', 'proposals'
+];
+
+const extraDocDirs = (process.env.CLAUDE_DOC_ALLOWED_DIRS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+const DOC_ALLOWED_DIR_RE = new RegExp(
+  `(^|/)(${[...DEFAULT_DOC_DIRS, ...extraDocDirs]
+    .map(d => d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')})/`
+);
 
 /**
  * Should creating this file be blocked as a stray doc file?

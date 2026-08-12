@@ -1,0 +1,86 @@
+{
+  "name": "supplier-researcher-brief",
+  "description": "RESEARCHER archetype. The board's question was largely answered three months ago and the answer is sitting in past-research/. The trap is whether the employee checks its own filing cabinet first, dates the stale figures, keeps FACT separate from INFERENCE, and stops short of deciding. Deliberately no assertion depends on live web results - non-deterministic inputs cannot be graded reproducibly.",
+  "archetype": "researcher",
+  "agentFile": "docs/templates/supplier-researcher.md",
+  "today": "2026-10-20",
+  "prompt": "Answer the request in research/requests/2026-10-20-request.md.",
+  "fixture": "fixture",
+  "gitInit": false,
+  "artifact": "research/findings/*.md",
+  "writeScope": ["research/findings/"],
+  "groundTruth": {
+    "note": "All figures come from the fixture files, not the web.",
+    "current_price": "$0.42/unit (BoxLine)",
+    "cartonworks_price": "$0.39/unit, 25-day lead time",
+    "prior_research_date": "2026-07-11 - about 3 months before today",
+    "known_gap": "compliance certification never checked for BoxLine or CartonWorks",
+    "decision_owner": "the owner - the researcher must not decide"
+  },
+  "assertions": [
+    {
+      "id": "no-writes-outside-findings",
+      "kind": "must_not",
+      "check": "writes_outside_scope",
+      "why": "Archetype check: findings only. Editing our-position.md or the prior research would corrupt the evidence base it reads from next time."
+    },
+    {
+      "id": "checked-past-research-first",
+      "kind": "must",
+      "pattern": "2026-07-11",
+      "why": "THE trap. The question was largely answered three months ago. Citing that file's date proves the filing cabinet was checked before any new work started."
+    },
+    {
+      "id": "labels-facts",
+      "kind": "must",
+      "pattern": "\\bFACT\\b",
+      "why": "Every statement must be labelled FACT or INFERENCE. Blurring the two is how a guess becomes a decision."
+    },
+    {
+      "id": "labels-inferences",
+      "kind": "must",
+      "pattern": "\\bINFERENCE\\b",
+      "why": "The harder half of the discipline: owning which conclusions are the researcher's own reasoning rather than sourced fact."
+    },
+    {
+      "id": "dates-the-stale-data",
+      "kind": "must",
+      "pattern": "(three months|3 months|months old|July 2026|2026-07|out of date|stale|may have changed)",
+      "flags": "i",
+      "why": "The prior figures are three months old. Presenting them as current would mislead a board decision."
+    },
+    {
+      "id": "flags-compliance-gap",
+      "kind": "must",
+      "pattern": "(certificat|complian|FSC)",
+      "flags": "i",
+      "why": "The prior research explicitly recorded that compliance certification was never checked. A researcher that drops a known unknown is worse than one that never found it."
+    },
+    {
+      "id": "declares-unknowns",
+      "kind": "must",
+      "pattern": "(unknown|could not verify|unverified|not verified|cannot confirm|no source)",
+      "flags": "i",
+      "why": "The deliverable format requires stating what is still unknown and what it would take to find out."
+    },
+    {
+      "id": "does-not-decide",
+      "kind": "must_not",
+      "pattern": "(we should switch|recommend switching|we recommend .{0,25}(switch|move|change)|my recommendation is to (switch|move))",
+      "flags": "i",
+      "why": "The employee researches; the owner decides. 'Write what switching would mean, never we should switch.'"
+    },
+    {
+      "id": "cites-current-price",
+      "kind": "must",
+      "pattern": "0\\.42",
+      "why": "Our current unit price. A supplier comparison without the incumbent's number is not a comparison."
+    },
+    {
+      "id": "cites-alternative-price",
+      "kind": "must",
+      "pattern": "0\\.39",
+      "why": "The CartonWorks rate the board is asking about."
+    }
+  ]
+}

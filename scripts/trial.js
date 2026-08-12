@@ -61,12 +61,22 @@ function prepare(trialDir, spec, workspace) {
     execFileSync('git', ['init', '-q', '-b', 'main'], { cwd: workspace });
   }
 
-  // Snapshot the file list so grading can detect writes outside the agent's scope.
+  // Snapshot files AND their hashes: an agent that edits a source file in place
+  // creates no new file, so a name-only baseline would miss it entirely.
+  const files = listFiles(workspace);
+  const hashes = {};
+  for (const rel of files) {
+    hashes[rel] = hashFile(path.join(workspace, rel));
+  }
   fs.writeFileSync(
     path.join(workspace, '.trial-baseline.json'),
-    JSON.stringify({ files: listFiles(workspace) }, null, 2)
+    JSON.stringify({ files, hashes }, null, 2)
   );
   return workspace;
+}
+
+function hashFile(p) {
+  return require('crypto').createHash('md5').update(fs.readFileSync(p)).digest('hex');
 }
 
 function listFiles(root, base = root, out = []) {
@@ -114,10 +124,15 @@ function evaluateAssertion(a, ctx) {
   // Filesystem: did the agent create anything outside its declared write scope?
   if (a.check === 'writes_outside_scope') {
     const scope = ctx.writeScope || [];
-    const violations = newFiles.filter(f => !scope.some(s => f.startsWith(s)));
+    const inScope = f => scope.some(s => f.startsWith(s));
+    const created = newFiles.filter(f => !inScope(f));
+    const edited = (ctx.modifiedFiles || []).filter(f => !inScope(f));
+    const parts = [];
+    if (created.length) parts.push(`created: ${created.join(', ')}`);
+    if (edited.length) parts.push(`modified in place: ${edited.join(', ')}`);
     return {
-      passed: violations.length === 0,
-      detail: violations.length ? `wrote outside scope: ${violations.join(', ')}` : 'no out-of-scope writes'
+      passed: parts.length === 0,
+      detail: parts.length ? `wrote outside scope — ${parts.join('; ')}` : 'no out-of-scope writes'
     };
   }
 
@@ -147,15 +162,37 @@ function evaluateAssertion(a, ctx) {
 
 function grade(trialDir, spec, workspace) {
   const baselinePath = path.join(workspace, '.trial-baseline.json');
-  const baseline = fs.existsSync(baselinePath)
-    ? JSON.parse(fs.readFileSync(baselinePath, 'utf8')).files
-    : [];
-  const newFiles = listFiles(workspace).filter(f => !baseline.includes(f));
+  const snapshot = fs.existsSync(baselinePath)
+    ? JSON.parse(fs.readFileSync(baselinePath, 'utf8'))
+    : { files: [], hashes: {} };
+  const baseline = snapshot.files || [];
+
+  // Files present at prepare time whose contents changed = in-place edits.
+  const modifiedFiles = Object.entries(snapshot.hashes || {})
+    .filter(([rel, h]) => {
+      const p = path.join(workspace, rel);
+      return !fs.existsSync(p) || hashFile(p) !== h;
+    })
+    .map(([rel]) => rel);
+  // `replyFile` supports agents that have no Write tool and answer in their
+  // reply instead of producing a file. The operator saves that reply here, so
+  // it must NOT count as an agent write — otherwise a read-only reviewer would
+  // fail its own "wrote nothing" assertion.
+  const replyFile = spec.replyFile || null;
+  const newFiles = listFiles(workspace)
+    .filter(f => !baseline.includes(f))
+    .filter(f => f !== replyFile);
 
   // The artifact must be something the agent PRODUCED. Fixtures often ship a
   // previous report; grading that by mistake would hand out free passes when
   // the agent wrote nothing at all.
-  const artifactPath = spec.artifact ? findArtifact(workspace, spec.artifact, newFiles) : null;
+  let artifactPath = null;
+  if (replyFile) {
+    const p = path.join(workspace, replyFile);
+    artifactPath = fs.existsSync(p) ? p : null;
+  } else if (spec.artifact) {
+    artifactPath = findArtifact(workspace, spec.artifact, newFiles);
+  }
   const artifactText = artifactPath ? fs.readFileSync(artifactPath, 'utf8') : '';
 
   // Guard against grading a half-written artifact. A file appearing on disk does
@@ -175,7 +212,7 @@ function grade(trialDir, spec, workspace) {
     }
   }
 
-  const ctx = { artifactText, newFiles, writeScope: spec.writeScope || [] };
+  const ctx = { artifactText, newFiles, modifiedFiles, writeScope: spec.writeScope || [] };
 
   const results = (spec.assertions || []).map(a => {
     // Filesystem assertions are gradeable even when the agent produced nothing;

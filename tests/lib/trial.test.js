@@ -105,6 +105,13 @@ run('writes_outside_scope passes when all writes are in scope', () => {
   const c = { ...ctx, newFiles: ['company/reports/r.md'] };
   assert.ok(evaluateAssertion({ check: 'writes_outside_scope' }, c).passed);
 });
+run('REGRESSION: detects an in-place edit of a source file', () => {
+  // Editing pricing.md creates no new file, so a name-only diff would miss it.
+  const c = { ...ctx, newFiles: [], modifiedFiles: ['sales/pricing.md'], writeScope: ['sales/drafts/'] };
+  const r = evaluateAssertion({ check: 'writes_outside_scope' }, c);
+  assert.ok(!r.passed, 'in-place edits outside scope must fail');
+  assert.ok(r.detail.includes('modified in place'), r.detail);
+});
 
 console.log('\ngrade (end to end):');
 run('grades a good run as fully passing', () => {
@@ -162,6 +169,42 @@ run('does not flag a settled artifact', () => {
   fs.utimesSync(p, old, old);
   const r = grade(null, SPEC, ws);
   assert.strictEqual(r.unsettled, false, 'an old artifact must not be flagged');
+});
+
+console.log('\nreplyFile (agents with no Write tool):');
+run('grades the reply file and does not count it as an agent write', () => {
+  const ws = makeWorkspace('reply', {
+    baseline: ['playbook.md'],
+    produced: { '_reply.md': 'VERDICT: FIX FIRST. net -$4,170 found.' }
+  });
+  const spec = {
+    replyFile: '_reply.md',
+    writeScope: [],
+    assertions: [
+      { id: 'verdict', kind: 'must', pattern: 'FIX FIRST' },
+      { id: 'wrote-nothing', kind: 'must_not', check: 'writes_outside_scope' }
+    ]
+  };
+  const r = grade(null, spec, ws);
+  assert.ok(r.results.find(x => x.id === 'verdict').passed, 'should read the reply');
+  assert.ok(
+    r.results.find(x => x.id === 'wrote-nothing').passed,
+    'the operator-saved reply must not count as an agent write'
+  );
+});
+
+run('a read-only agent that writes a file still fails the scope check', () => {
+  const ws = makeWorkspace('replyviolate', {
+    baseline: [],
+    produced: { '_reply.md': 'VERDICT: APPROVE', 'notes.md': 'sneaky' }
+  });
+  const spec = {
+    replyFile: '_reply.md',
+    writeScope: [],
+    assertions: [{ id: 'wrote-nothing', kind: 'must_not', check: 'writes_outside_scope' }]
+  };
+  const r = grade(null, spec, ws);
+  assert.ok(!r.results[0].passed, 'notes.md must trip the scope assertion');
 });
 
 console.log('\naggregate (pass^k vs pass@k):');

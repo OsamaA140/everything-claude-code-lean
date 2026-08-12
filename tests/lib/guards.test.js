@@ -146,6 +146,15 @@ run('allows templates/planner.md', () =>
   assert.strictEqual(isStrayDocFile('templates/planner.md'), false));
 run('allows company/how-we-work.md (agent knowledge folders)', () =>
   assert.strictEqual(isStrayDocFile('company/how-we-work.md'), false));
+run('allows trial fixture data under any domain folder', () =>
+  assert.strictEqual(isStrayDocFile('trials/contract-review/fixture/legal/standards.md'), false));
+run('REGRESSION: allows a maker saving to its own output folder', () =>
+  // This blocked a proposal-writer from saving its draft at all.
+  assert.strictEqual(isStrayDocFile('sales/drafts/tamarind-proposal.md'), false));
+run('allows research findings output', () =>
+  assert.strictEqual(isStrayDocFile('research/findings/suppliers.md'), false));
+run('still blocks a stray note at the repo root', () =>
+  assert.strictEqual(isStrayDocFile('scratch.md'), true));
 run('ignores non-doc files', () =>
   assert.strictEqual(isStrayDocFile('src/index.ts'), false));
 

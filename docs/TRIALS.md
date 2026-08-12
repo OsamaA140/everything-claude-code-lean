@@ -73,6 +73,25 @@ The shipped template now carries **both** limits, and says so explicitly with th
 
 **Two caveats remain on both results.** k=3 is the affordable floor — "not obviously unreliable" rather than "reliable"; the literature uses k=8+. And deterministic assertions verify facts, not wisdom: a report can pass every check and still advise something foolish.
 
+## Archetype coverage
+
+| Archetype | Trial | Status |
+|---|---|---|
+| planner | `ops-manager-smb`, `ops-manager-catering`, `ops-manager-workshop` | 15/15 pass^k (seen + two held-out) |
+| reviewer | `contract-checker-review` | **12/12 pass^k**, zero flaky |
+| maker | `proposal-writer-draft` | built; runs pending |
+| researcher | `supplier-researcher-brief` | built; runs pending |
+
+### Reviewer — `contract-checker-review`, k=3
+
+An incoming MSA carrying six defects against the company's standards, past issues, and the accepted quote — plus two clauses that are perfectly compliant and one the standards do not cover at all.
+
+All three runs caught every defect: a fee $1,500 below the accepted quote (which requires cross-checking `quotes/` rather than reading the contract alone), net-60 payment terms, uncapped indemnity, work-made-for-hire over the whole toolkit, a 90-day renewal notice window, and one-sided termination. All three named the recurring past issues explicitly, left the two compliant clauses alone, and said "no standard on this" for confidentiality instead of improvising a position.
+
+**The archetype check — `wrote-nothing` — passed 3/3.** A reviewer has no Write tool by design; the separation between who finds a problem and who fixes it is the role.
+
+Two defects were found that the fixture never planted: the Supplier entity is never named, and clause 10's "our home jurisdiction" has no referent in a two-party agreement, making it unenforceable as drafted.
+
 ## Writing a trial
 
 A trial is a directory containing `trial.json` and a `fixture/` tree that is copied fresh for every run.
